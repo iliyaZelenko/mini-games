@@ -20,7 +20,11 @@ module.exports = (env, argv) => {
     },
     devtool: 'inline-source-map',
     devServer: {
-      contentBase: path.join(__dirname, 'dist')
+      contentBase: path.join(__dirname, 'dist'),
+      // не показывает инфу а bundle
+      noInfo: true,
+      // overlay с ошибками
+      overlay: true
       // open: true
       // hot: true
     },

@@ -2,20 +2,24 @@
 const c = document.querySelector('canvas')
 const ctx = c.getContext('2d')
 
-const ceil = 16
-const fieldCeilsCount = 40
-const fieldW = ceil * fieldCeilsCount
-const fieldH = ceil * fieldCeilsCount
+const ceil = 8
+const fieldCeilsXCount = 80
+const fieldCeilsYCount = 80
+const fieldW = ceil * fieldCeilsXCount
+const fieldH = ceil * fieldCeilsYCount
 
 c.width = fieldW
 c.height = fieldH
 
-const snakeStartX = (fieldCeilsCount / 2) * ceil
-const snakeStartY = (fieldCeilsCount / 2) * ceil
+const snakeStartX = (fieldCeilsXCount / 2) * ceil
+const snakeStartY = (fieldCeilsYCount / 2) * ceil
+const snakeCeilsSize = 2
+const snakeCeilsWidthPx = ceil * snakeCeilsSize
+const snakeCeilsHeightPx = ceil * snakeCeilsSize
 let snakeX = snakeStartX
 let snakeY = snakeStartY
 let currentDir = 'top'
-let worldIntervalFrequency = 100
+let worldIntervalFrequency = 60 // 30
 let worldInterval = null
 let worldIntervalIterations = 0
 // первый элемент - это конец хвоста, последний - начало змеи
@@ -38,9 +42,13 @@ start()
 document.body.addEventListener('keydown', ({ key }) => {
   const dirByKey = {
     w: 'top',
+    ArrowTop: 'top',
     d: 'right',
+    ArrowRight: 'right',
     s: 'bottom',
-    a: 'left'
+    ArrowBottom: 'bottom',
+    a: 'left',
+    ArrowLeft: 'left'
   }
 
   if (dirByKey[key]) {
@@ -67,12 +75,27 @@ function worldCycle () {
   }
 
   move(currentDir)
+  moveRegardingWorldBoundaries()
   draw()
 
-  // === snakeX
+  // TODO maybe before draw and delete draw
+  checkTakeBonus()
+  const taran = savedPositions.slice(0, -1).find(i => i.x === snakeX && i.y === snakeY)
+  if (taran) {
+    alert('Game over')
+  }
+}
+function clear () {
+  ctx.clearRect(0, 0, fieldW, fieldH)
+}
+function checkTakeBonus () {
   const takeBonus = bonusesPositions.find(i =>
-    savedPositions.some(k => k.x === i.x && k.y === i.y)
+    savedPositions.some(k =>
+      k.x <= i.x && i.x <= k.x + snakeCeilsWidthPx &&
+      k.y <= i.y && i.y <= k.y + snakeCeilsHeightPx
+    )
   )
+
   if (takeBonus) {
     bonusesPositions = bonusesPositions.filter(i => i !== takeBonus)
 
@@ -85,14 +108,6 @@ function worldCycle () {
     })
     draw()
   }
-
-  const taran = savedPositions.slice(0, -1).find(i => i.x === snakeX && i.y === snakeY)
-  if (taran) {
-    alert('Game over')
-  }
-}
-function clear () {
-  ctx.clearRect(0, 0, fieldW, fieldH)
 }
 function move (dir) {
   // let dirOpposite
@@ -115,22 +130,59 @@ function move (dir) {
     // y: snakeY
   })
 }
+// корректирует движение относительно границ мира
+function moveRegardingWorldBoundaries () {
+  const head = getSnakeHeadPos()
+  let x
+  let y
+
+  if (head.x < 0) {
+    x = fieldW - ceil
+  }
+  if (head.x > fieldW) {
+    x = 0
+  }
+  if (head.y < 0) {
+    y = fieldH - ceil
+  }
+  if (head.y > fieldH) {
+    y = 0
+  }
+
+  setSnakeHeadPos(x, y)
+}
+function setSnakeHeadPos (x, y) {
+  const head = getSnakeHeadPos()
+
+  if (x === undefined || x === null) {
+    x = head.x
+  }
+  if (y === undefined || x === null) {
+    y = head.y
+  }
+
+  head.x = snakeX = x
+  head.y = snakeY = y
+}
+function getSnakeHeadPos () {
+  return savedPositions[savedPositions.length - 1]
+}
 function draw () {
   clear()
 
   for (let { x, y } of savedPositions) {
     ctx.beginPath()
     ctx.fillStyle = 'green'
-    ctx.fillRect(x, y, ceil, ceil)
+    ctx.fillRect(x, y, snakeCeilsWidthPx, snakeCeilsHeightPx)
     ctx.fill()
     ctx.stroke()
   }
   for (let { x, y } of bonusesPositions) {
-    const radius = 5
+    const radius = ceil / 2
 
     ctx.beginPath()
     ctx.fillStyle = '#FF0000'
-    ctx.arc(x + ceil / 2, y + ceil / 2, radius, 0, 2 * Math.PI, false)
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
     ctx.fill()
     ctx.stroke()
   }
@@ -159,12 +211,12 @@ function pause () {
 }
 function addBonus () {
   bonusesPositions.push({
-    x: getRandomCeil(),
-    y: getRandomCeil()
+    x: getRandomCeil() + ceil / 2,
+    y: getRandomCeil() + ceil / 2
   })
 }
 function getRandomCeil () {
-  return Math.floor(Math.random() * fieldCeilsCount) * ceil
+  return Math.floor(Math.random() * fieldCeilsXCount) * ceil
 }
 function changePosByDir (dir, pos) {
   switch (dir) {
