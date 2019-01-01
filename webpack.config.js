@@ -1,7 +1,12 @@
 const path = require('path')
+const webpack = require('webpack')
+
+// Plugins
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const webpack = require('webpack')
+
+const srcPath = join(__dirname, 'src')
+const distPath = join(__dirname, 'dist')
 
 module.exports = (env, argv) => {
   const isDev = argv.mode === 'development'
@@ -16,29 +21,27 @@ module.exports = (env, argv) => {
     ...config,
     // mode: 'development',
     entry: {
-      app: './src/index.js'
+      app: join(srcPath, 'index.js')
     },
     devtool: 'inline-source-map',
     devServer: {
-      contentBase: path.join(__dirname, 'dist'),
+      contentBase: distPath,
       // не показывает инфу а bundle
       noInfo: true,
       // overlay с ошибками
       overlay: true
       // open: true
-      // hot: true
     },
     plugins: [
       new CleanWebpackPlugin(['dist']),
       new HtmlWebpackPlugin({
-        title: 'Hot Module Replacement',
-        template: './src/index.html'
-      }),
-      new webpack.HotModuleReplacementPlugin()
+        title: 'My page',
+        template: join(srcPath, 'index.html')
+      })
     ],
     output: {
       filename: '[name].bundle.js',
-      path: path.resolve(__dirname, 'dist')
+      path: distPath
     },
     module: {
       rules: [
