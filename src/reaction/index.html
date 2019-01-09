@@ -1,0 +1,87 @@
+<div class="click-container click-container--wait">
+  <div class="result-list">
+    Лучший результат:
+    <span class="result-list__best-result">
+      ?
+    </span>
+    <br>
+
+    Средний результат:
+    <span class="result-list__average-result">
+      ?
+    </span>
+    <br>
+
+    Последние результаты:
+    <span class="result-list__results">
+      ?
+    </span>
+    <br>
+
+    Худший результат:
+    <span class="result-list__worst-result">
+      ?
+    </span>
+  </div>
+
+  <span class="click-container__text">
+    Нажмите чтобы начать.
+  </span>
+
+  <div class="bottom-info">
+    Нажмите два раза чтобы обнулить результат.
+  </div>
+</div>
+
+<!--<div class="click-container click-container&#45;&#45;get-ready">-->
+  <!--Приготовьтесь.-->
+<!--</div>-->
+
+<!--<div class="click-container click-container&#45;&#45;click">-->
+  <!--Нажимайте!-->
+<!--</div>-->
+
+<style>
+  .click-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    height: 100vh;
+    border: 1px solid lightgrey;
+    border-radius: 15px;
+  }
+
+  .click-container--wait {
+    background: aliceblue;
+  }
+
+  .click-container--get-ready {
+    background: blue;
+    color: white;
+  }
+
+  .click-container--click {
+    background: red;
+    color: white;
+  }
+
+  .result-list {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+  }
+
+  .bottom-info {
+    position: absolute;
+    bottom: 10px;
+    font-size: 1.5rem;
+    color: gray;
+  }
+/*
+  .click-container--hidden {
+    display: none;
+  }*/
+</style>

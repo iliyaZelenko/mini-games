@@ -2,7 +2,7 @@ module.exports = {
   root: true,
   env: {
     // this automatically sets the ecmaVersion parser option to 6
-    es6: true,
+    // es6: true,
     browser: true,
     node: true
   },
@@ -24,8 +24,8 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
   },
+  parser: 'babel-eslint',
   parserOptions: {
-    parser: 'babel-eslint',
     sourceType: 'module',
     ecmaFeature: {
       jsx: false

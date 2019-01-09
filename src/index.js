@@ -1,9 +1,15 @@
-console.log(location.pathname)
+const routes = {
+  '/': () => import(/* webpackChunkName: "snake-game" */ './snake'),
+  '/reaction': () => import(/* webpackChunkName: "reaction-game" */ './reaction')
+}
+const matchedRoute = routes[location.pathname]
+const routerViewEl = document.querySelector('#router-view')
 
-if (location.pathname === '/') {
-  import('./snake/index.html').then(html => {
-    document.body.innerHTML = html.default
-
-    require('./snake')
+if (matchedRoute) {
+  matchedRoute().then(({ default: html, script }) => {
+    routerViewEl.innerHTML = html
+    script()
   })
+} else {
+  alert('404')
 }
