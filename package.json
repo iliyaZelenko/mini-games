@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "webpack-dev-server --hot --mode development",
     "start": "webpack-dev-server --mode production",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "gp-deploy": "./gp-deploy.sh"
   },
   "devDependencies": {
     "babel-eslint": "8",

@@ -1,3 +1,5 @@
+const { urlBasePath } = require('./config')
+
 // const webpack = require('webpack')
 const { join, resolve } = require('path')
 
@@ -26,10 +28,12 @@ module.exports = (env, argv) => {
     },
     output: {
       filename: '[name].bundle.js',
-      path: distPath
+      path: distPath,
+      publicPath: urlBasePath,
     },
     devtool: 'inline-source-map',
     devServer: {
+      // publicPath: urlBasePath,
       // serve assets from dist
       contentBase: distPath,
       // не показывает инфу а bundle
@@ -37,12 +41,11 @@ module.exports = (env, argv) => {
       // overlay с ошибками
       overlay: true,
       // для SPA навигации
-      historyApiFallback: true
+      // historyApiFallback: true
     },
     plugins: [
       new CleanWebpackPlugin([distPath]),
       new HtmlWebpackPlugin({
-        title: 'My page',
         template: join(srcPath, 'index.html')
       }),
       new CopyWebpackPlugin([
@@ -75,7 +78,8 @@ module.exports = (env, argv) => {
     resolve: {
       extensions: ['.ts', '.js'],
       alias: {
-        '~': srcPath
+        '~': srcPath,
+        '~root': __dirname
       }
     }
   }
